@@ -33,23 +33,6 @@ namespace Vlc.DotNet.Forms
         [Editor(typeof(DirectoryEditor), typeof(UITypeEditor))]
         public DirectoryInfo VlcLibDirectory { get; set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Browsable(false)]
-        public bool IsPlaying
-        {
-            get
-            {
-                if (myVlcMediaPlayer != null)
-                {
-                    return myVlcMediaPlayer.IsPlaying();
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
         public void BeginInit()
         {
             // not used yet
@@ -127,6 +110,12 @@ namespace Vlc.DotNet.Forms
 
         #region VlcControl Functions & Properties
 
+        public void NextFrame()
+        {
+            if (myVlcMediaPlayer == null) return;
+            myVlcMediaPlayer.NextFrame();
+        }
+
         public void Play()
         {
             //EndInit();
@@ -197,8 +186,8 @@ namespace Vlc.DotNet.Forms
                 return null;
             }
         }
-        
-        public void TakeSnapshot(string fileName) 
+
+        public void TakeSnapshot(string fileName)
         {
             FileInfo fileInfo = new FileInfo(fileName);
             myVlcMediaPlayer.TakeSnapshot(fileInfo);
@@ -242,6 +231,42 @@ namespace Vlc.DotNet.Forms
                 {
                     return null;
                 }
+            }
+        }
+
+        [Browsable(false)]
+        public float FramesPerSecond
+        {
+            get
+            {
+                return myVlcMediaPlayer == null ? -1 : myVlcMediaPlayer.FramesPerSecond;
+            }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public bool IsPlaying
+        {
+            get
+            {
+                if (myVlcMediaPlayer != null)
+                {
+                    return myVlcMediaPlayer.IsPlaying();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public bool IsPausable
+        {
+            get
+            {
+                return myVlcMediaPlayer == null ? false : myVlcMediaPlayer.IsPausable();
             }
         }
 
@@ -406,7 +431,7 @@ namespace Vlc.DotNet.Forms
             //EndInit();
             myVlcMediaPlayer.SetMedia(file, options);
         }
-        
+
         public void SetMedia(string mrl, params string[] options)
         {
             //EndInit();
